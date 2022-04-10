@@ -1,3 +1,10 @@
+body {
+    background-image: url('../img/hackku.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: bottom; 
+}
+
 .main {
     display:flex;
     justify-content: center;
@@ -68,5 +75,21 @@
 #funny {
     position: fixed;
     bottom: 0;
-    text-align: center;
+}
+
+#funny_right {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+#user_info {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    border-style: solid;
+    padding: 100px;
+    width: 400px;
 }

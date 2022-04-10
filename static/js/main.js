@@ -1,7 +1,6 @@
 const sha256 = require('crypto-js/sha256') 
 const ecLib = require('elliptic').ec
 const ec = new ecLib('secp256k1')
-
 class Transaction   //money move
 {
     constructor(from,to,amount)
@@ -40,7 +39,7 @@ class Block     //a block
         this.datas = datas      //language
         this.transactions = transactions    //money move
         this.Merklehash = this.Merklehashs()    //for virify 
-        this.nonce = 1  //initial nouce
+        this.nonce = 1  //initial nonce
         this.hash = this.computeHash()      //this hash, actualy is head hash
     }
 
@@ -240,7 +239,6 @@ class Verify
     }
 }
 
-
 const funnyCoins = new Chain()
 const t1 = new Transaction('A','B',10)
 const d1 = new Data('为了联盟')
@@ -250,4 +248,5 @@ funnyCoins.minePool('A')
 console.log(funnyCoins.chain)
 const moneycheck = new UTXO
 moneycheck.collect('A',funnyCoins.chain)
+
 
