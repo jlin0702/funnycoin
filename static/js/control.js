@@ -1,4 +1,4 @@
-
+const members = []
 
 let topics = document.getElementsByClassName("topic");
 for (let i = 0; i < topics.length; i++) {
@@ -19,5 +19,7 @@ document.getElementById("login").addEventListener("click", () => {
 })
 
 document.getElementById("getkey").addEventListener("click", () => {
-    let key = alert("Here's your key: ")
+    let member = new Member()
+    alert("Here's your key:\n" + "Private: " + member.privateKey + "\nPublic: " + member.publicKey)
+    members.append(member)
 })
