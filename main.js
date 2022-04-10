@@ -14,6 +14,10 @@ class Transaction   //money move
     {
         return sha256(this.from+this.to+this.amount).toString()     //use sha256
     }
+    sign(key)
+    {
+        this.signature = key.sign(this.computeHash(),'base64').toDER('hex')
+    }
 }
 
 class Data  //what people say
@@ -199,7 +203,20 @@ class Member
         this.keyPair = ec.genKeyPair();
         this.privateKey = keyPair.getPrivate('hex')
         this.publicKey = keyPair.getPublic('hex')
-        
+    }
+    makeTransaction(chain,addr,amount)
+    {
+        let T = new Transaction (this.publicKey,addr,amount)
+        chain.addTransaction(T)
+    }
+    saysomething(chain,language)
+    {
+        let L = new Data(language)
+        chain.addDatas(L)
+    }
+    mineblock(chain)
+    {
+        chain.minePool(publicKey)
     }
 
 }
