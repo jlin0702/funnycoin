@@ -1,0 +1,66 @@
+.main {
+    display:flex;
+    justify-content: center;
+}
+
+#page1 {
+    width: 30%;
+    float: left;
+}
+
+#page2 {
+    float: left;
+    width: 50%;
+}
+
+#page3 {
+    display: none;
+}
+
+.center {
+    text-align: center;
+}
+
+.container {
+    overflow-y: auto;
+    width: 50%;
+    margin: auto;
+    height: 200px;
+}
+
+.topic {
+    border-style: solid;
+    float: left;
+    font-size: 20px;
+    padding: 10px;
+    margin: 20px;
+}
+
+.posts {
+    padding: 30px;
+}
+
+.highlighted {
+    background-color: aliceblue;
+}
+
+#login {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    width: 100px;
+}
+
+#getkey {
+    position: fixed;
+    top: 25px;
+    right: 150px;
+    width: 100px;
+}
+
+#mine {
+    position: fixed;
+    top: 300px;
+    right: 25px;
+    width: 100px;
+}
