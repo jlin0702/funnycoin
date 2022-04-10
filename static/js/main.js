@@ -247,6 +247,7 @@ class UTXO      // unspend money
     }
 }
 
+//used for adding members to the blockchain
 class Member        // for UI
 {
     constructor()
