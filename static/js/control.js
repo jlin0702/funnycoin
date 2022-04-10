@@ -15,6 +15,7 @@ for (let i = 0; i < topics.length; i++) {
 
 document.getElementById("login").addEventListener("click", () => {
     let key = prompt("Please enter your key")
+    let key2 = prompt("Please enter key 2")
 })
 
 document.getElementById("getkey").addEventListener("click", () => {

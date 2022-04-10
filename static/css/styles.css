@@ -64,3 +64,9 @@
     right: 25px;
     width: 100px;
 }
+
+#funny {
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+}
