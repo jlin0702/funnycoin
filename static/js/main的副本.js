@@ -14,21 +14,9 @@ class Transaction   //money move
     {
         return sha256(this.from+this.to+this.amount).toString()     //use sha256
     }
-    sign(privateKey){
-        this.signature =  privateKey.sign(this.computeHash(), 'base64').toDER('hex')
-      }
-    valid(publicKey)
+    sign(key)
     {
-        if(this.from == 'none')
-        {
-            return true
-        }
-        else if (this.from == this.to)
-        {
-            return false
-        }
-        const keyobj = ec.publicKey(this.from,'hex')
-        return keyobj.verify(this.computeHash(),this.signature)
+        this.signature = key.sign(this.computeHash(),'base64').toDER('hex')
     }
 }
 
@@ -123,18 +111,6 @@ class Block     //a block
     {//for head
         return sha256(this.previousHash+this.nonce+JSON.stringify(this.datas)).toString()
     }
-
-    verifyTransActions()
-    {
-        for(let transAction of this.transActions)
-        {
-            if(!transAction.isValid())
-            {
-                return false
-            }
-        }
-        return true
-    }
 }
 
 class Chain
@@ -150,10 +126,7 @@ class Chain
 
     addTransaction(transaction)     //make trade
     {
-        if(transaction.from != transaction.to && transaction.valid)
-        {
             this.transactionPool.push(transaction)      //push 
-        }
     }
 
     addDatas(data)
@@ -174,45 +147,13 @@ class Chain
 
     Genesis()
     {       //first block
-        const genesisBlock = new Block([new Transaction('none','no',100),],'',[new Data('Welcome!')])    
+        const genesisBlock = new Block([new Transaction('A','B',10),],'',[new Data('Welcome!')])    
         return genesisBlock
     }
     
     getLastBlock()
     {//get the final block
         return this.chain[this.chain.length-1]
-    }
-
-    verifyChain()
-    {
-        if(this.chain.length==1)
-        {
-            if(this.chain[0].hash != this.chain[0].computeHash())
-            {return false}
-
-        }
-
-        for(let i = 1; i <= this.chain.length-1; i++)
-        {
-            const blockForVerify = this.chain[i]
-            const previousBlock = this.chain[i-1]
-            if(!blockForVerify.verifyBlockTransActions())
-            {
-                console('found problem trade')
-                return false
-            }
-            if(blockForVerify.hash != blockForVerify.computeHash())
-            {
-                console.log('data miss')
-                return false
-            }
-            if(blockForVerify.previousHash != previousBlock.hash)
-            {
-                console.log('hash point loss')
-                return false
-            }
-        }
-        return true
     }
 }
 
@@ -248,11 +189,11 @@ class UTXO      // unspend money
     }
 }
 
-class Member        // for UI
+class Member
 {
     constructor()
     {
-        const keyPair = ec.genKeyPair();
+        this.keyPair = ec.genKeyPair();
         this.privateKey = keyPair.getPrivate('hex')
         this.publicKey = keyPair.getPublic('hex')
     }
@@ -272,4 +213,44 @@ class Member        // for UI
     }
 
 }
+
+class Verify
+{
+    constructor()
+    {
+        this.moneycheck = new UTXO
+    }
+    legalTransaction(add,chain)
+    {
+        if(moneycheck.collect(add,chain)>0)
+        {
+            return true
+        }
+        else
+        {
+            return false
+        } 
+    }
+}
+
+veri = new Verify
+const funnyCoins = new Chain()
+const t1 = new Transaction('A','B',10)
+const d1 = new Data('为了联盟')
+funnyCoins.addTransaction(t1)
+funnyCoins.addDatas(d1)
+funnyCoins.minePool('A')
+// console.log(funnyCoins.chain)
+// const moneycheck = new UTXO
+// moneycheck.collect('A',funnyCoins.chain)
+
+const fs = require('fs')
+const content = JSON.stringify(funnyCoins)
+
+fs.writeFile('data.txt', content, err => {
+  if (err) {
+    console.error(err)
+  }
+  //file written successfully
+})
 
