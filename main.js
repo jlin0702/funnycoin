@@ -192,7 +192,19 @@ class UTXO      // unspend money
     }
 }
 
-class verify
+class Member
+{
+    constructor()
+    {
+        this.keyPair = ec.genKeyPair();
+        this.privateKey = keyPair.getPrivate('hex')
+        this.publicKey = keyPair.getPublic('hex')
+        
+    }
+
+}
+
+class Verify
 {
     constructor()
     {
