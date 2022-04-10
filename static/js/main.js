@@ -273,22 +273,3 @@ class Member        // for UI
 
 }
 
-class Verify
-{
-    constructor()
-    {
-        this.moneycheck = new UTXO
-    }
-    legalTransaction(add,chain)
-    {
-        if(moneycheck.collect(add,chain)>0)
-        {
-            return true
-        }
-        else
-        {
-            return false
-        } 
-    }
-}
-
