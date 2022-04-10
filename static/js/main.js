@@ -13,9 +13,21 @@ class Transaction   //money move
     {
         return sha256(this.from+this.to+this.amount).toString()     //use sha256
     }
-    sign(key)
+    sign(privateKey){
+        this.signature =  privateKey.sign(this.computeHash(), 'base64').toDER('hex')
+      }
+    valid(publicKey)
     {
-        this.signature = key.sign(this.computeHash(),'base64').toDER('hex')
+        if(this.from == 'none')
+        {
+            return true
+        }
+        else if (this.from == this.to)
+        {
+            return false
+        }
+        const keyobj = ec.publicKey(this.from,'hex')
+        return keyobj.verify(this.computeHash(),this.signature)
     }
 }
 
@@ -110,6 +122,18 @@ class Block     //a block
     {//for head
         return sha256(this.previousHash+this.nonce+JSON.stringify(this.datas)).toString()
     }
+
+    verifyTransActions()
+    {
+        for(let transAction of this.transActions)
+        {
+            if(!transAction.isValid())
+            {
+                return false
+            }
+        }
+        return true
+    }
 }
 
 class Chain
@@ -125,13 +149,9 @@ class Chain
 
     addTransaction(transaction)     //make trade
     {
-        if(legalTransaction)
+        if(transaction.from != transaction.to && transaction.valid)
         {
             this.transactionPool.push(transaction)      //push 
-        }
-        else
-        {
-            throw error('no enough money');     //legal
         }
     }
 
@@ -153,13 +173,45 @@ class Chain
 
     Genesis()
     {       //first block
-        const genesisBlock = new Block([new Transaction('A','B',10),],'',[new Data('Welcome!')])    
+        const genesisBlock = new Block([new Transaction('none','no',100),],'',[new Data('Welcome!')])    
         return genesisBlock
     }
     
     getLastBlock()
     {//get the final block
         return this.chain[this.chain.length-1]
+    }
+
+    verifyChain()
+    {
+        if(this.chain.length==1)
+        {
+            if(this.chain[0].hash != this.chain[0].computeHash())
+            {return false}
+
+        }
+
+        for(let i = 1; i <= this.chain.length-1; i++)
+        {
+            const blockForVerify = this.chain[i]
+            const previousBlock = this.chain[i-1]
+            if(!blockForVerify.verifyBlockTransActions())
+            {
+                console('found problem trade')
+                return false
+            }
+            if(blockForVerify.hash != blockForVerify.computeHash())
+            {
+                console.log('data miss')
+                return false
+            }
+            if(blockForVerify.previousHash != previousBlock.hash)
+            {
+                console.log('hash point loss')
+                return false
+            }
+        }
+        return true
     }
 }
 
@@ -195,11 +247,11 @@ class UTXO      // unspend money
     }
 }
 
-class Member
+class Member        // for UI
 {
     constructor()
     {
-        this.keyPair = ec.genKeyPair();
+        const keyPair = ec.genKeyPair();
         this.privateKey = keyPair.getPrivate('hex')
         this.publicKey = keyPair.getPublic('hex')
     }
@@ -238,15 +290,4 @@ class Verify
         } 
     }
 }
-
-const funnyCoins = new Chain()
-const t1 = new Transaction('A','B',10)
-const d1 = new Data('为了联盟')
-funnyCoins.addTransaction(t1)
-funnyCoins.addDatas(d1)
-funnyCoins.minePool('A')
-console.log(funnyCoins.chain)
-const moneycheck = new UTXO
-moneycheck.collect('A',funnyCoins.chain)
-
 
